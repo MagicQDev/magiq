@@ -7,42 +7,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { SidebarMenuButton } from "./ui/sidebar";
-import { useEffect } from "react";
-import { Company } from "@/types/company.types";
+} from "../../ui/dropdown-menu";
+import { SidebarMenuButton } from "../../ui/sidebar";
+import { CompanyByOwnerId } from "@/types/company.types";
 import { useUserCompanyStore } from "@/stores/user.store";
-import { Button } from "./ui/button";
-import { Link } from "react-router-dom";
 
-function NavCompany() {
-  const user = useUserCompanyStore((state) => state.user);
-  const userLoading = useUserCompanyStore((state) => state.userLoading);
-  const companyLoading = useUserCompanyStore((state) => state.companyLoading);
+function BusinessSwitcher() {
   const companies = useUserCompanyStore((state) => state.companies);
-  const setCompanies = useUserCompanyStore((state) => state.setCompanies);
   const activeCompany = useUserCompanyStore((state) => state.activeCompany);
   const setActiveCompany = useUserCompanyStore(
     (state) => state.setActiveCompany
   );
-
-  useEffect(() => {
-    if (user && !userLoading) {
-      setCompanies(user.id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, userLoading]);
-
-  return userLoading || companyLoading ? (
-    <div className="flex gap-1 p-2">
-      <div className="size-8 bg-foreground/40 rounded-sm animate-pulse" />
-      <div className="flex flex-col ml-2 gap-1">
-        <div className="size-4 bg-foreground/40 rounded-sm animate-pulse w-36" />
-        <div className="size-3 bg-foreground/40 rounded-sm animate-pulse w-24" />
-      </div>
-    </div>
-  ) : companies.length > 0 ? (
-    activeCompany != null && (
+  return (
+    activeCompany && (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <SidebarMenuButton
@@ -61,7 +38,7 @@ function NavCompany() {
                 {activeCompany.name}
               </span>
               <span className="truncate text-xs">
-                {activeCompany?.company_type.name}
+                {activeCompany?.business_type.name}
               </span>
             </div>
             <ChevronsUpDown className="ml-auto" />
@@ -76,7 +53,7 @@ function NavCompany() {
           <DropdownMenuLabel className="text-xs text-muted-foreground">
             Mis negocios
           </DropdownMenuLabel>
-          {companies.map((company: Company, index) => (
+          {companies.map((company: CompanyByOwnerId, index) => (
             <DropdownMenuItem
               key={company.name}
               onClick={() => setActiveCompany(company)}
@@ -103,11 +80,7 @@ function NavCompany() {
         </DropdownMenuContent>
       </DropdownMenu>
     )
-  ) : (
-    <Button className="w-full" asChild>
-      <Link to="/company">Crea tu negocio!</Link>
-    </Button>
   );
 }
 
-export default NavCompany;
+export default BusinessSwitcher;

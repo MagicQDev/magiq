@@ -1,5 +1,7 @@
 import Layout from "@/pages/layout";
 import CompanyPage from "@/pages/public/features/company";
+import Dashboard from "@/pages/public/features/dashboard";
+import Kitchen from "@/pages/public/features/kitchen";
 import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
@@ -9,12 +11,17 @@ export const router = createBrowserRouter([
     errorElement: <div>404</div>,
     children: [
       {
+        path: "",
+        index: true,
+        element: <Dashboard></Dashboard>
+      },
+      {
         path: "company",
         element: <CompanyPage />,
       },
       {
-        path: "products",
-        element: <div>Products</div>,
+        path: "kitchen",
+        element: <Kitchen />,
       },
       {
         path: "profile",

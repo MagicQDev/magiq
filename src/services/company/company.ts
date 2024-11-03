@@ -1,15 +1,47 @@
-import axios from "axios";
-export const getCompanyByOwnerId = async (ownerId: number) => {
-  try {
-    const res = await axios.get(`http://localhost:8080/api/company/${ownerId}`);
-    if (res.status !== 200) {
-      return [];
-    } else {
-      const companies = res.data.data as [];
-      return companies;
-    }
-  } catch (err) {
-    console.error(err);
-    return [];
+import { CompanyByOwnerId } from "@/types/company.types";
+import { supabase } from "../supabase";
+export const getCompanyByOwnerId = async (ownerId: string) => {
+  const { data, error } = await supabase
+    .from("business")
+    .select(
+      `
+        id,
+        name,
+        owner_id,
+        nit,
+        logo_url,
+        google_maps_url,
+        email_contact,
+        phone_contact,
+        address,
+        social_fb,
+        social_ig,
+        social_tw,
+        social_lin,
+        primary_color,
+        secondary_color,
+        business_type(
+            id,
+            name,
+            features:feature_business_type!inner(
+                id,
+                position,
+                data:feature!inner(
+                  name,
+                  description,
+                  app_url,
+                  icon,
+                  active
+                )
+              )
+          )
+      `
+    )
+    .eq("owner_id", ownerId)
+    .order("name", { ascending: true });
+
+  if (error) {
+    throw new Error(error.message);
   }
+  return data as CompanyByOwnerId[];
 };

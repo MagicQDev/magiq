@@ -56,4 +56,36 @@ interface Company {
   created_at?: Date;
   updated_at?: Date;
 }
-export type { Company, CompanyType, Contact, SocialNetworks };
+interface CompanyByOwnerId {
+  id: number;
+  name: string;
+  owner_id: number;
+  nit: string;
+  logo_url: string;
+  google_maps_url: string;
+  email_contact: string;
+  phone_contact: string;
+  address: string;
+  social_fb: string;
+  social_ig: string;
+  social_tw: string;
+  social_lin: string;
+  primary_color: string;
+  secondary_color: string;
+  business_type: {
+    id: number;
+    name: string;
+    features: {
+      id: number;
+      position: number;
+      data: {
+        name: string;
+        description: string;
+        app_url: string;
+        icon: string;
+        active: boolean;
+      };
+    }[];
+  };
+}
+export type { Company, CompanyByOwnerId, CompanyType, Contact, SocialNetworks };
