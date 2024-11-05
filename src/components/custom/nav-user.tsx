@@ -20,9 +20,8 @@ import {
 import { useUserCompanyStore } from "@/stores/user.store";
 
 export function NavUser() {
-  const { isMobile } = useSidebar();
+  const { isMobile, open } = useSidebar();
   const user = useUserCompanyStore((state) => state.user);
-
   const getInicials = (name: string) => {
     return name
       .split(" ")
@@ -101,12 +100,14 @@ export function NavUser() {
       </SidebarMenuItem>
     </SidebarMenu>
   ) : (
-    <div className="flex gap-1 p-2">
+      <div className={`flex ${open ? "gap-1 p-2" : ""}`} >
       <div className=" rounded-full size-8 bg-foreground/40 animate-pulse"></div>
-      <div className="flex flex-col ml-2 gap-1">
-        <div className="rounded-full size-4 bg-foreground/40 animate-pulse w-36"></div>
-        <div className="rounded-full size-3 bg-foreground/40 animate-pulse w-24"></div>
-      </div>
+        {open && (
+          <div className="flex flex-col ml-2 gap-1">
+            <div className="rounded-full size-4 bg-foreground/40 animate-pulse w-36"></div>
+            <div className="rounded-full size-3 bg-foreground/40 animate-pulse w-24"></div>
+          </div>
+        )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { getCompanyByOwnerId } from "@/services/company/company";
+import { getBusinessByOwnerId } from "@/services/business/business";
 import { useQuery } from "@tanstack/react-query";
 
 export default function useFetchNav({
@@ -10,7 +10,7 @@ export default function useFetchNav({
     queryKey: ["nav", owner_id],
     queryFn: async () => {
       if (!owner_id) return;
-      return await getCompanyByOwnerId(owner_id);
+      return await getBusinessByOwnerId(owner_id);
     },
     retry() {
       return false;

@@ -1,6 +1,6 @@
-import { CompanyByOwnerId } from "@/types/company.types";
+import { BusinessByOwnerId } from "@/types/business.types";
 import { supabase } from "../supabase";
-export const getCompanyByOwnerId = async (ownerId: string) => {
+export const getBusinessByOwnerId = async (ownerId: string) => {
   const { data, error } = await supabase
     .from("business")
     .select(
@@ -43,5 +43,5 @@ export const getCompanyByOwnerId = async (ownerId: string) => {
   if (error) {
     throw new Error(error.message);
   }
-  return data as CompanyByOwnerId[];
+  return data as BusinessByOwnerId[];
 };

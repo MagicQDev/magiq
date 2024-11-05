@@ -1,4 +1,4 @@
-import { CompanyByOwnerId } from "@/types/company.types";
+import { CompanyByOwnerId } from "@/types/business.types";
 import { User } from "@/types/user.types";
 import { create, StateCreator } from "zustand";
 interface UserSlice {

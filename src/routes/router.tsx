@@ -1,5 +1,5 @@
 import Layout from "@/pages/layout";
-import CompanyPage from "@/pages/public/features/company";
+import CompanyPage from "@/pages/public/features/business";
 import Dashboard from "@/pages/public/features/dashboard";
 import Kitchen from "@/pages/public/features/kitchen";
 import { createBrowserRouter } from "react-router-dom";
@@ -16,7 +16,7 @@ export const router = createBrowserRouter([
         element: <Dashboard></Dashboard>
       },
       {
-        path: "company",
+        path: "business",
         element: <CompanyPage />,
       },
       {

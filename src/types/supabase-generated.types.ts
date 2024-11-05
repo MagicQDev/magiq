@@ -200,6 +200,7 @@ export type Database = {
           created_at: string | null
           feature_id: string
           id: string
+          position: number
           updated_at: string | null
         }
         Insert: {
@@ -207,6 +208,7 @@ export type Database = {
           created_at?: string | null
           feature_id: string
           id?: string
+          position?: number
           updated_at?: string | null
         }
         Update: {
@@ -214,6 +216,7 @@ export type Database = {
           created_at?: string | null
           feature_id?: string
           id?: string
+          position?: number
           updated_at?: string | null
         }
         Relationships: [
