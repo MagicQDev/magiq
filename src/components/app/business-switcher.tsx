@@ -9,8 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "../ui/sidebar";
-import { CompanyByOwnerId } from "@/types/business.types";
 import { useUserCompanyStore } from "@/stores/user.store";
+import { BusinessByOwnerId } from "@/types/business.types";
 
 function BusinessSwitcher() {
   const companies = useUserCompanyStore((state) => state.companies);
@@ -64,7 +64,7 @@ function BusinessSwitcher() {
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Mis negocios
             </DropdownMenuLabel>
-            {companies.map((company: CompanyByOwnerId, index) => (
+            {companies.map((company: BusinessByOwnerId, index) => (
               <DropdownMenuItem
                 key={company.name}
                 onClick={() => setActiveCompany(company)}
