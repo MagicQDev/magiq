@@ -1,36 +1,38 @@
 import { useEffect } from "react";
-import { useUserCompanyStore } from "@/stores/user.store";
+import { useUserBusinessStore } from "@/stores/user.store";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import NavCompanySkeleton from "../app/nav-company-skeleton";
 import BusinessSwitcher from "../app/business-switcher";
 import useFetchNav from "@/hooks/use-nav";
 import { useSidebar } from "../ui/sidebar";
-import ArrowNav from "@/assets/up-arrow-nav.png"
+import ArrowNav from "@/assets/up-arrow-nav.png";
 import { Plus } from "lucide-react";
 
-function NavCompany({ showSidebarMessage, hideSidebarMessage }: { showSidebarMessage: boolean, hideSidebarMessage: () => void }) {
-  const user = useUserCompanyStore((state) => state.user);
-  const companies = useUserCompanyStore((state) => state.companies);
-  const setCompanies = useUserCompanyStore((state) => state.setCompanies);
-  const activeCompany = useUserCompanyStore((state) => state.activeCompany);
-  const setActiveCompany = useUserCompanyStore(
+function NavCompany({
+  showSidebarMessage,
+  hideSidebarMessage,
+}: {
+  showSidebarMessage: boolean;
+  hideSidebarMessage: () => void;
+}) {
+  const user = useUserBusinessStore((state) => state.user);
+  const companies = useUserBusinessStore((state) => state.companies);
+  const setCompanies = useUserBusinessStore((state) => state.setCompanies);
+  const activeCompany = useUserBusinessStore((state) => state.activeCompany);
+  const setActiveCompany = useUserBusinessStore(
     (state) => state.setActiveCompany
   );
-  const {
-    open,
-    setOpen,
-    setOpenMobile,
-    isMobile,
-    openMobile,
-  } = useSidebar()
-  const { data, isLoading, isPending, error } = useFetchNav({ owner_id: user?.id });
+  const { open, setOpen, setOpenMobile, isMobile, openMobile } = useSidebar();
+  const { data, isLoading, isPending, error } = useFetchNav({
+    owner_id: user?.id,
+  });
 
   const onCrearNegocioClick = () => {
     setOpen(false);
     setOpenMobile(false);
     hideSidebarMessage();
-  }
+  };
   useEffect(() => {
     if (data && !error) {
       setCompanies(data);
@@ -38,28 +40,44 @@ function NavCompany({ showSidebarMessage, hideSidebarMessage }: { showSidebarMes
     }
   }, [data]);
 
-
   if (isLoading || isPending) {
-    return <NavCompanySkeleton></NavCompanySkeleton>
+    return <NavCompanySkeleton></NavCompanySkeleton>;
   }
 
   if (companies.length > 0 && activeCompany != null) {
-    return <BusinessSwitcher></BusinessSwitcher>
+    return <BusinessSwitcher></BusinessSwitcher>;
   }
   const validateIsOpen = () => {
-    return isMobile ? openMobile : open
-  }
+    return isMobile ? openMobile : open;
+  };
   return (
     <div className="p-2">
-      <Button size={open ? "default" : "icon"} className={`${validateIsOpen() ? "w-full mb-2" : ""}`} asChild onClick={onCrearNegocioClick}>
-        <Link title="Crear empresa" to="/business">{validateIsOpen() ? "Crea tu negocio!" :
-          <Plus></Plus>}
+      <Button
+        size={open ? "default" : "icon"}
+        className={`${validateIsOpen() ? "w-full mb-2" : ""}`}
+        asChild
+        onClick={onCrearNegocioClick}
+      >
+        <Link title="Crear empresa" to="/business">
+          {validateIsOpen() ? "Crea tu negocio!" : <Plus></Plus>}
         </Link>
       </Button>
-      <div className={`${!validateIsOpen() || !showSidebarMessage ? 'hidden' : 'flex flex-row w-full mx-3 md:mx-0'}`}>
-        <p className="font-normal text-left text-sm italic w-full mt-5 md:mt-6 md:w-3/4">Continua con el registro de tu emprendimiento!</p>
-        <img src={ArrowNav} alt="arrow up" className="absolute right-8 md:right-3 w-12 md:14"
-          style={{ transform: "scaleX(-1)" }}></img>
+      <div
+        className={`${
+          !validateIsOpen() || !showSidebarMessage
+            ? "hidden"
+            : "flex flex-row w-full mx-3 md:mx-0"
+        }`}
+      >
+        <p className="font-normal text-left text-sm italic w-full mt-5 md:mt-6 md:w-3/4">
+          Continua con el registro de tu emprendimiento!
+        </p>
+        <img
+          src={ArrowNav}
+          alt="arrow up"
+          className="absolute right-8 md:right-3 w-12 md:14"
+          style={{ transform: "scaleX(-1)" }}
+        ></img>
       </div>
     </div>
   );

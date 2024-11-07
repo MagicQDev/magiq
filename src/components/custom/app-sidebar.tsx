@@ -11,20 +11,16 @@ import {
 } from "@/components/ui/sidebar";
 import NavCompany from "./nav-business";
 import useFetchNav from "@/hooks/use-nav";
-import { useUserCompanyStore } from "@/stores/user.store";
+import { useUserBusinessStore } from "@/stores/user.store";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const user = useUserCompanyStore((state) => state.user);
+  const user = useUserBusinessStore((state) => state.user);
   const [showSidebarMessage, setShowSidebarMessage] = useState(false);
   const { pathname } = useLocation();
 
-  const {
-    setOpen,
-    setOpenMobile,
-    isMobile,
-  } = useSidebar()
+  const { setOpen, setOpenMobile, isMobile } = useSidebar();
   const { data, error } = useFetchNav({ owner_id: user?.id });
   useEffect(() => {
     if (data && !error) {
@@ -33,7 +29,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         if (isMobile) {
           setOpenMobile(true);
         }
-      } else if (pathname === "/business" && data.length < 1) {
+      } else if (pathname === "/business/create" && data.length < 1) {
         setShowSidebarMessage(false);
         setOpen(false);
         setOpenMobile(false);
@@ -45,7 +41,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="p-0">
         <SidebarMenu className="items-center">
           <SidebarMenuItem className="p-2 md:p-0 w-full">
-            <NavCompany showSidebarMessage={showSidebarMessage} hideSidebarMessage={() => setShowSidebarMessage(false)} />
+            <NavCompany
+              showSidebarMessage={showSidebarMessage}
+              hideSidebarMessage={() => setShowSidebarMessage(false)}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

@@ -9,13 +9,13 @@ import {
 } from "@/components/ui/sidebar";
 import Icon from "../app/icon";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
-import { useUserCompanyStore } from "@/stores/user.store";
+import { useUserBusinessStore } from "@/stores/user.store";
 import { Link } from "react-router-dom";
 import { useIsFetching } from "@tanstack/react-query";
 import useFetchNav from "@/hooks/use-nav";
 export function NavMain() {
-  const activeCompany = useUserCompanyStore((state) => state.activeCompany);
-  const user = useUserCompanyStore((state) => state.user);
+  const activeCompany = useUserBusinessStore((state) => state.activeCompany);
+  const user = useUserBusinessStore((state) => state.user);
   const { open } = useSidebar();
   const isFetching = useIsFetching();
   const { data } = useFetchNav({ owner_id: user?.id });

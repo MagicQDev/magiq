@@ -9,15 +9,17 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "../ui/sidebar";
-import { useUserCompanyStore } from "@/stores/user.store";
+import { useUserBusinessStore } from "@/stores/user.store";
 import { BusinessByOwnerId } from "@/types/business.types";
+import { useNavigate } from "react-router-dom";
 
 function BusinessSwitcher() {
-  const companies = useUserCompanyStore((state) => state.companies);
-  const activeCompany = useUserCompanyStore((state) => state.activeCompany);
-  const setActiveCompany = useUserCompanyStore(
+  const companies = useUserBusinessStore((state) => state.companies);
+  const activeCompany = useUserBusinessStore((state) => state.activeCompany);
+  const setActiveCompany = useUserBusinessStore(
     (state) => state.setActiveCompany
   );
+  const navigate = useNavigate();
   const { open, openMobile } = useSidebar();
   return (
     activeCompany && (
@@ -82,7 +84,10 @@ function BusinessSwitcher() {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onClick={() => navigate("/business/create")}
+            >
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>

@@ -3,55 +3,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import FormControlInput from "@/components/custom/app-form-field";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getBusinessTypes } from "@/services/business/business-type";
 import { NitFieldFormater, PhoneFieldFormater } from "@/utils/validation";
 import { Button } from "@/components/ui/button";
-
-const RegisterBusinessFS = z.object({
-  name: z
-    .string({
-      required_error: "Nombre es requerido",
-    })
-    .min(4, "El nombre debe tener mínimo 4 caracteres")
-    .max(255, "El nombre es demasiado largo"),
-  description: z.string().optional(),
-  // regex to allow numbers and before the last number add -
-  nit: z
-    .string()
-    .max(11, "El NIT debe tener máximo 10 caracteres númericos")
-    .regex(/(^[0-9]+-{1}[0-9]{1})/g, "Información no valida")
-    .optional(),
-  business_type_id: z.string({
-    required_error: "Tipo de negocio es requerido",
-  }),
-  logo: z.instanceof(File).optional(),
-  email_contact: z
-    .string({
-      message: "Email es requerido",
-    })
-    .email({
-      message: "Email no válido",
-    }),
-  phone_contact: z
-    .string({
-      message: "Número de teléfono es requerido",
-    })
-    .min(12, "Número de teléfono no válido")
-    .max(12, "Número de teléfono no válido"),
-  address: z
-    .string({
-      message: "Dirección es requerida",
-    })
-    .min(6, "Dirección no válida"),
-  google_maps_url: z.string().optional(),
-  social_fb: z.string().optional(),
-  social_ig: z.string().optional(),
-  social_tw: z.string().optional(),
-  social_lin: z.string().optional(),
-  primary_color: z.string().optional(),
-  secondary_color: z.string().optional(),
-});
+import { saveBusiness } from "@/services/business/business";
+import { Tables } from "@/types/supabase-generated.types";
+import { useUserBusinessStore } from "@/stores/user.store";
+import { RegisterBusinessFS } from "../utils/business-forms";
+import { useToast } from "@/hooks/use-toast";
 
 function RegisterBusinessForm() {
   const { data: options } = useQuery({
@@ -64,13 +24,30 @@ function RegisterBusinessForm() {
     },
     refetchOnMount: false,
   });
-
+  const user = useUserBusinessStore((state) => state.user);
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof RegisterBusinessFS>>({
     resolver: zodResolver(RegisterBusinessFS),
     mode: "onBlur",
   });
+  const mutation = useMutation({
+    mutationFn: async (newBusiness: Tables<"business">) => {
+      return await saveBusiness(newBusiness);
+    },
+    onSuccess: () => {
+      form.reset();
+      toast({
+        title: "Negocio registrado",
+        description: "Tu negocio ha sido registrado satisfactoriamente",
+      });
+    },
+  });
+
   const onSubmit = (data: z.infer<typeof RegisterBusinessFS>) => {
-    console.log({ data });
+    if (user === null) return;
+    const values = data as Tables<"business">;
+    values.owner_id = user.id;
+    mutation.mutate(values);
   };
   return (
     <Form {...form}>
@@ -127,6 +104,7 @@ function RegisterBusinessForm() {
             type="default"
             label="Teléfono de contacto"
             fieldName="phone_contact"
+            value={form.watch("phone_contact")}
             required={true}
             placeholder="300 123 4567"
             description="Ingrese el número de celular de su negocio"

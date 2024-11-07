@@ -1,11 +1,11 @@
 import SubTitle from "@/components/app/subtitle";
 import Title from "@/components/app/title";
-import { useUserCompanyStore } from "@/stores/user.store";
+import { useUserBusinessStore } from "@/stores/user.store";
 import RegisterBusinessForm from "./components/business-form";
 import { Separator } from "@/components/ui/separator";
 
 function CompanyPage() {
-  const companies = useUserCompanyStore((state) => state.companies);
+  const companies = useUserBusinessStore((state) => state.companies);
 
   const titleMsg =
     companies.length < 1 ? "Crear empresa / negocio" : "Tus empresas";

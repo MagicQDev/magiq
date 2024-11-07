@@ -13,10 +13,10 @@ export const router = createBrowserRouter([
       {
         path: "",
         index: true,
-        element: <Dashboard></Dashboard>
+        element: <Dashboard></Dashboard>,
       },
       {
-        path: "business",
+        path: "business/create",
         element: <CompanyPage />,
       },
       {

@@ -1,7 +1,7 @@
 function LoadingPage({ visible }: { visible: boolean }) {
   return (
     visible && (
-      <div className="absolute z-100 w-full md:w-4/5 lg:w-3/4 xl:w-2/3 h-full">
+      <div className="absolute z-50 w-full md:w-4/5 lg:w-9/12 xl:w-7/12 2xl:w-5/12 h-full">
         <div className="relative w-full bg-background p-4">
           <div className="flex flex-col w-full ml-2 gap-1">
             <div className="h-5 bg-foreground/40 rounded-sm animate-pulse w-1/2" />

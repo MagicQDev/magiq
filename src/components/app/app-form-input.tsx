@@ -12,6 +12,7 @@ import React from "react";
 interface AppFormInputProps extends React.HTMLProps<HTMLInputElement> {
   type?: "default" | "select" | "file";
   field: any;
+  value?: any;
   formError: string | undefined;
   placeholder: string | undefined;
   options: any[];
@@ -30,6 +31,7 @@ export const AppFormInput = React.forwardRef<
     {
       type = "default",
       field,
+      value,
       formError,
       placeholder,
       options,
@@ -50,6 +52,7 @@ export const AppFormInput = React.forwardRef<
                 {...field}
                 className={`${formError ? "border-destructive" : ""}`}
                 placeholder={placeholder}
+                value={value}
                 onChange={(e) => {
                   onChange(e);
                   field.onChange(e);
@@ -60,6 +63,7 @@ export const AppFormInput = React.forwardRef<
             ) : (
               <Input
                 {...field}
+                value={value}
                 className={`${formError ? "border-destructive" : ""}`}
                 placeholder={placeholder}
                 onChange={(e) => {
@@ -103,8 +107,10 @@ export const AppFormInput = React.forwardRef<
               }`}
               placeholder={placeholder}
               onChange={(e) => {
+                e.preventDefault();
                 onChange(e);
               }}
+              value={value}
               type={inputType}
               accept={accept}
             />

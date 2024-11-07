@@ -19,14 +19,14 @@ export const createUserSlice: StateCreator<UserSlice> = (set) => ({
   },
 });
 
-interface CompanySlice {
+interface BusinessSlice {
   companies: BusinessByOwnerId[];
   activeCompany: BusinessByOwnerId | null;
   setCompanies: (data: BusinessByOwnerId[]) => void;
   setActiveCompany: (company: BusinessByOwnerId) => void;
 }
 
-export const createCompanySlice: StateCreator<CompanySlice> = (set) => ({
+export const createBusinessSlice: StateCreator<BusinessSlice> = (set) => ({
   companies: [],
   activeCompany: null,
   setCompanies: (data: BusinessByOwnerId[]) => {
@@ -37,9 +37,9 @@ export const createCompanySlice: StateCreator<CompanySlice> = (set) => ({
   },
 });
 
-interface UserCompanyStore extends UserSlice, CompanySlice {}
+interface UserBusinessStore extends UserSlice, BusinessSlice {}
 
-export const useUserCompanyStore = create<UserCompanyStore>((...a) => ({
+export const useUserBusinessStore = create<UserBusinessStore>((...a) => ({
   ...createUserSlice(...a),
-  ...createCompanySlice(...a),
+  ...createBusinessSlice(...a),
 }));

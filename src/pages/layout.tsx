@@ -6,19 +6,23 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import useFetchNav from "@/hooks/use-nav";
-import { useUserCompanyStore } from "@/stores/user.store";
-import { useEffect } from "react";
+import { useUserBusinessStore } from "@/stores/user.store";
 import { Outlet } from "react-router-dom";
 import LoadingPage from "./public/features/loading";
 import MLogo from "@/assets/M.png";
+import { useIsFetching, useIsMutating } from "@tanstack/react-query";
+import { useEffect } from "react";
+import Loader from "@/assets/loading.svg";
 
 export default function Layout() {
-  const setUser = useUserCompanyStore((state) => state.setUser);
-  const user = useUserCompanyStore((state) => state.user);
+  const setUser = useUserBusinessStore((state) => state.setUser);
+  const user = useUserBusinessStore((state) => state.user);
   const wait = (ms: number, execute: () => void) =>
     new Promise(() => setTimeout(execute, ms));
   const { isFetching, isLoading } = useFetchNav({ owner_id: user?.id });
 
+  const globalFetch = useIsFetching();
+  const isMutating = useIsMutating();
   useEffect(() => {
     wait(5000, () => {
       setUser({
@@ -53,12 +57,22 @@ export default function Layout() {
             </div>
           </div>
         </header>
-        <main className="flex flex-1 self-center flex-col pt-0 w-full md:w-4/5 lg:w-3/4 xl:w-2/3 h-full">
+        <main className="flex flex-1 self-center flex-col pt-0 w-full md:w-4/5 lg:w-9/12 xl:w-7/12 2xl:w-5/12 h-full">
           <section className="px-6 md:px-0">
             <Outlet></Outlet>
           </section>
           <LoadingPage visible={!user || isFetching || isLoading} />
         </main>
+        {globalFetch > 0 ||
+          (isMutating > 0 && !(!user || isFetching || isLoading) && (
+            <div className="absolute backdrop-blur-sm  rounded-xl w-full z-40 h-full max-h-[calc(100svh-theme(spacing.4)) shadow">
+              <div className="flex justify-center items-center w-full h-[95%]">
+                <div className="">
+                  <Loader></Loader>
+                </div>
+              </div>
+            </div>
+          ))}
       </SidebarInset>
     </SidebarProvider>
   );
