@@ -1,4 +1,5 @@
 import Layout from "@/pages/layout";
+import PromoAdvicePage from "@/pages/public/features/promo-advice/promo-advice-page";
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -43,6 +44,10 @@ export const router = createBrowserRouter([
       {
         path: "kitchen",
         element: <Kitchen />,
+      },
+      {
+        path: "promo-advice",
+        element: <PromoAdvicePage />,
       },
       {
         path: "profile",
