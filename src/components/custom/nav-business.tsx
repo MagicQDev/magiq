@@ -6,7 +6,7 @@ import NavCompanySkeleton from "../app/nav-company-skeleton";
 import BusinessSwitcher from "../app/business-switcher";
 import useFetchNav from "@/hooks/use-nav";
 import { useSidebar } from "../ui/sidebar";
-import ArrowNav from "@/assets/up-arrow-nav.png";
+import ArrowNav from "@/assets/up-arrow-nav.webp";
 import { Plus } from "lucide-react";
 
 function NavCompany({
@@ -58,7 +58,7 @@ function NavCompany({
         asChild
         onClick={onCrearNegocioClick}
       >
-        <Link title="Crear empresa" to="/business">
+        <Link title="Crear empresa" to="/business/create">
           {validateIsOpen() ? "Crea tu negocio!" : <Plus></Plus>}
         </Link>
       </Button>
