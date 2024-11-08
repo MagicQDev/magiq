@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { saveBusiness } from "@/services/business/business";
 import { Tables } from "@/types/supabase-generated.types";
 import { useUserBusinessStore } from "@/stores/user.store";
-import { RegisterBusinessFS } from "../utils/business-forms";
+import { RegisterBusinessFS } from "../../utils/business-forms";
 import { useToast } from "@/hooks/use-toast";
 
 function RegisterBusinessForm() {

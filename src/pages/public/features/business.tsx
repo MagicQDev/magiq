@@ -1,7 +1,7 @@
 import SubTitle from "@/components/app/subtitle";
 import Title from "@/components/app/title";
 import { useUserBusinessStore } from "@/stores/user.store";
-import RegisterBusinessForm from "./components/business-form";
+import RegisterBusinessForm from "./create-business/components/business-form";
 import { Separator } from "@/components/ui/separator";
 
 function CompanyPage() {
