@@ -3,43 +3,40 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import FormControlInput from "@/components/custom/app-form-field";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getBusinessTypes } from "@/services/business/business-type";
+import { useMutation } from "@tanstack/react-query";
 import { NitFieldFormater, PhoneFieldFormater } from "@/utils/validation";
 import { Button } from "@/components/ui/button";
 import { saveBusiness } from "@/services/business/business";
 import { Tables } from "@/types/supabase-generated.types";
 import { useUserBusinessStore } from "@/stores/user.store";
-import { RegisterBusinessFS } from "../../utils/business-forms";
-import { useToast } from "@/hooks/use-toast";
+import { RegisterBusinessFS } from "../utils/business-forms";
+import useBusinessByType from "@/hooks/use-business-by-type";
+import { BusinessByOwnerId } from "@/types/business.types";
 
-function RegisterBusinessForm() {
-  const { data: options } = useQuery({
-    queryKey: ["business_types_list"],
-    queryFn: async () => {
-      return await getBusinessTypes();
-    },
-    retry() {
-      return false;
-    },
-    refetchOnMount: false,
-  });
+function RegisterBusinessForm({
+  onSuccess,
+  onError,
+}: {
+  onSuccess: (data: BusinessByOwnerId[]) => void;
+  onError: () => void;
+}) {
+  const { data: options } = useBusinessByType();
   const user = useUserBusinessStore((state) => state.user);
-  const { toast } = useToast();
   const form = useForm<z.infer<typeof RegisterBusinessFS>>({
     resolver: zodResolver(RegisterBusinessFS),
     mode: "onBlur",
   });
+
   const mutation = useMutation({
     mutationFn: async (newBusiness: Tables<"business">) => {
       return await saveBusiness(newBusiness);
     },
-    onSuccess: () => {
+    onSuccess: (data:BusinessByOwnerId[]) => {
       form.reset();
-      toast({
-        title: "Negocio registrado",
-        description: "Tu negocio ha sido registrado satisfactoriamente",
-      });
+      onSuccess(data);
+    },
+    onError: () => {
+      onError();
     },
   });
 

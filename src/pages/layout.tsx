@@ -8,11 +8,11 @@ import {
 import useFetchNav from "@/hooks/use-nav";
 import { useUserBusinessStore } from "@/stores/user.store";
 import { Outlet } from "react-router-dom";
-import LoadingPage from "./public/features/loading";
 import MLogo from "@/assets/M.png";
 import { useIsFetching, useIsMutating } from "@tanstack/react-query";
-import { useEffect } from "react";
-import Loader from "@/assets/loading.svg";
+import { Suspense, useEffect } from "react";
+import LoadingApp from "./public/features/loading";
+import SuspenseApp from "@/components/app/suspense";
 
 export default function Layout() {
   const setUser = useUserBusinessStore((state) => state.setUser);
@@ -20,10 +20,10 @@ export default function Layout() {
   const wait = (ms: number, execute: () => void) =>
     new Promise(() => setTimeout(execute, ms));
   const { isFetching, isLoading } = useFetchNav({ owner_id: user?.id });
-
   const globalFetch = useIsFetching();
   const isMutating = useIsMutating();
   useEffect(() => {
+    //798e7d40-4b65-4b83-9ea8-614c4a5e181d
     wait(5000, () => {
       setUser({
         id: "798e7d40-4b65-4b83-9ea8-614c4a5e181d",
@@ -44,7 +44,7 @@ export default function Layout() {
             {!user || isFetching || isLoading ? (
               <div className="h-4 w-28 bg-foreground/40 animate-pulse rounded-sm"></div>
             ) : (
-              <h1 className=" font-sans text-sm font-normal text-pretty text-gray-500">
+              <h1 className="text-sm font-normal text-pretty text-gray-500">
                 Bienvenido, {user?.name}
               </h1>
             )}
@@ -58,21 +58,17 @@ export default function Layout() {
           </div>
         </header>
         <main className="flex flex-1 self-center flex-col pt-0 w-full md:w-4/5 lg:w-9/12 xl:w-7/12 2xl:w-5/12 h-full">
-          <section className="px-6 md:px-0">
-            <Outlet></Outlet>
+          <section className="px-6 md:px-0 h-full">
+            <Suspense fallback={<SuspenseApp />}>
+              <Outlet></Outlet>
+            </Suspense>
           </section>
-          <LoadingPage visible={!user || isFetching || isLoading} />
         </main>
-        {globalFetch > 0 ||
-          (isMutating > 0 && !(!user || isFetching || isLoading) && (
-            <div className="absolute backdrop-blur-sm  rounded-xl w-full z-40 h-full max-h-[calc(100svh-theme(spacing.4)) shadow">
-              <div className="flex justify-center items-center w-full h-[95%]">
-                <div className="">
-                  <Loader></Loader>
-                </div>
-              </div>
-            </div>
-          ))}
+        {(globalFetch > 0 ||
+          isMutating > 0 ||
+          !user ||
+          isFetching ||
+          isLoading) && <LoadingApp />}
       </SidebarInset>
     </SidebarProvider>
   );

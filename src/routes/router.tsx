@@ -1,9 +1,22 @@
 import Layout from "@/pages/layout";
-import CompanyPage from "@/pages/public/features/business";
-import Dashboard from "@/pages/public/features/dashboard";
-import Kitchen from "@/pages/public/features/kitchen";
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 
+const Business = lazy(
+  () => import("@/pages/public/features/business/business-page")
+);
+const CreateBusiness = lazy(
+  () => import("@/pages/public/features/create-business/create-business-page")
+);
+const Kitchen = lazy(
+  () => import("@/pages/public/features/kitchen/kitchen-page")
+);
+const Dashboard = lazy(
+  () => import("@/pages/public/features/dashboard/dashboard-page")
+);
+const Products = lazy(
+  () => import("@/pages/public/features/products/products-page")
+);
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -16,8 +29,16 @@ export const router = createBrowserRouter([
         element: <Dashboard></Dashboard>,
       },
       {
+        path: "business",
+        element: <Business />,
+      },
+      {
         path: "business/create",
-        element: <CompanyPage />,
+        element: <CreateBusiness />,
+      },
+      {
+        path: "products",
+        element: <Products />,
       },
       {
         path: "kitchen",

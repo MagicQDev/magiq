@@ -23,6 +23,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { setOpen, setOpenMobile, isMobile } = useSidebar();
   const { data, error } = useFetchNav({ owner_id: user?.id });
   useEffect(() => {
+    console.log(pathname);
     if (data && !error) {
       if (data.length < 1 && pathname === "/") {
         setShowSidebarMessage(true);
