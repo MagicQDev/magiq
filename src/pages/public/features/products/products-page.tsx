@@ -7,13 +7,13 @@ import {
   PRODUCTS_PAGE_DESC,
   PRODUCTS_PAGE_TITLE,
 } from "@/utils/products-constants";
-import ProductsTable from "./components/products-table";
-import { useGetProducts } from "@/hooks/use-products";
+import ProductList from "./components/products-list";
+import { useGetProducts } from "@/pages/public/features/products/hooks/use-products";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import MenuForm from "./components/menu-form";
-import { BusinessType } from "./components/utils/types";
+import { BusinessType } from "./utils/types";
 function ProductsPage() {
   const [isOpenForm, setIsOpenForm] = useState(false);
   const activeCompany = useUserBusinessStore((state) => state.activeCompany);
@@ -43,7 +43,7 @@ function ProductsPage() {
           Agregar <Plus></Plus>
         </Button>
       </section>
-      <ProductsTable products={products}></ProductsTable>
+      <ProductList products={products}></ProductList>
       <MenuForm
         isOpen={isOpenForm}
         close={() => setIsOpenForm(false)}

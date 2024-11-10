@@ -10,7 +10,11 @@ const AppInputFile = React.forwardRef<HTMLInputElement, InputProps>(
     const [_file, setFile] = React.useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
     const handleFileChange = (event: FileChangeEvent): void => {
-      if (!event.target.files) return;
+      if (!event.target.files || event.target.files.length === 0) {
+        setFile(null);
+        setPreviewUrl(null);
+        return;
+      }
       const selectedFile: File = event.target.files[0];
       setFile(selectedFile);
 
@@ -30,8 +34,12 @@ const AppInputFile = React.forwardRef<HTMLInputElement, InputProps>(
           };
           reader.readAsDataURL(value);
         }
+      } else {
+        setPreviewUrl(null);
       }
     }, [value]);
+
+
     return (
       <div
         className={cn(

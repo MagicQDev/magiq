@@ -69,7 +69,7 @@ export const AppFormInput = React.forwardRef<
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {options.map((option) => (
+              {options.map((option: any) => (
                 <SelectItem
                   key={option[optionValueKey]}
                   value={option[optionValueKey]}

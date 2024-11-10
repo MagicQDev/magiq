@@ -19,7 +19,13 @@ export const RegisterBusinessFS = z.object({
     required_error: "Tipo de negocio es requerido",
   }),
   logo_file: z
-    .custom<FileList>((files) => files)
+    .custom<FileList>((files) => {
+      if (files) {
+        return files;
+      } else {
+        return true;
+      }
+    })
     .refine(
       (files) => {
         if (files.length > 0) {
@@ -46,7 +52,8 @@ export const RegisterBusinessFS = z.object({
         message:
           "El formato no es válido, sólo .jpg, .jpeg, .png and .webp son permitidos",
       }
-    ),
+    )
+    .optional(),
   email_contact: z
     .string({
       message: "Email es requerido",

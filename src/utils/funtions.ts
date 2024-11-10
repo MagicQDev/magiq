@@ -5,3 +5,9 @@ export const getValue = (alt: object | undefined, key: string) => {
     return "";
   }
 };
+export const maskedPrice = (price: number) => {
+  return price.toLocaleString("es-Co", {
+    style: "currency",
+    currency: "COP",
+  });
+};

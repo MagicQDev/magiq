@@ -13,7 +13,7 @@ function AppFormLabel({
 }) {
   return (
     <FormLabel
-      className={`flex items-center my-2 ${
+      className={`flex text-start my-2 ${
         formError ? "text-destructive" : "text-card-foreground"
       }`}
       htmlFor={fieldName}
@@ -21,7 +21,7 @@ function AppFormLabel({
       {label}
       {required == true && (
         <span
-          className={`"text-[12px] sm:text-[10px] leading-none font-normal ml-1 text-center align-middle ${
+          className={`"text-[12px] sm:text-[10px] leading-none font-normal ml-1 text-start align-middle ${
             formError ? "text-destructive" : "text-muted-foreground"
           }`}
         >
