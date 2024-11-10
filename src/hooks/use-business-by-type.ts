@@ -1,4 +1,4 @@
-import { getBusinessTypes } from "@/services/business/business-type";
+import { getBusinessTypes } from "@/services/business/business-type.service";
 import { useQuery } from "@tanstack/react-query";
 
 export default function useBusinessByType() {
@@ -10,6 +10,8 @@ export default function useBusinessByType() {
     retry() {
       return false;
     },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     refetchOnMount: false,
   });
 }

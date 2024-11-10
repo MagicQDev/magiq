@@ -1,3 +1,4 @@
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/utils/constants";
 import { z } from "zod";
 
 export const RegisterBusinessFS = z.object({
@@ -17,7 +18,35 @@ export const RegisterBusinessFS = z.object({
   business_type_id: z.string({
     required_error: "Tipo de negocio es requerido",
   }),
-  logo: z.instanceof(File).optional(),
+  logo_file: z
+    .custom<FileList>((files) => files)
+    .refine(
+      (files) => {
+        if (files.length > 0) {
+          return files[0].size < MAX_FILE_SIZE;
+        } else {
+          return true;
+        }
+      },
+      {
+        message: `El tamaño máximo permitido es de ${
+          MAX_FILE_SIZE / 1000000
+        }MB`,
+      }
+    )
+    .refine(
+      (files) => {
+        if (files.length > 0) {
+          return ACCEPTED_IMAGE_TYPES.includes(files[0].type);
+        } else {
+          return true;
+        }
+      },
+      {
+        message:
+          "El formato no es válido, sólo .jpg, .jpeg, .png and .webp son permitidos",
+      }
+    ),
   email_contact: z
     .string({
       message: "Email es requerido",

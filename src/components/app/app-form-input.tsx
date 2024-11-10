@@ -8,19 +8,15 @@ import {
 } from "../ui/select";
 import { Input } from "../ui/input";
 import React from "react";
+import { InputMoney } from "../ui/input-money";
+import { AppInputFile } from "./app-input-file";
+import { FormControlInputProps } from "../custom/app-form-field";
 
-interface AppFormInputProps extends React.HTMLProps<HTMLInputElement> {
-  type?: "default" | "select" | "file";
+interface CustomFormContolProps
+  extends Omit<Omit<FormControlInputProps, "fieldName">, "formControl"> {}
+
+interface AppFormInputProps extends CustomFormContolProps {
   field: any;
-  value?: any;
-  formError: string | undefined;
-  placeholder: string | undefined;
-  options: any[];
-  optionValueKey: string;
-  optionLabelKey: string;
-  inputType?: "text" | "email" | "password" | "file";
-  accept?: string;
-  onChange: (e: any) => void;
 }
 
 export const AppFormInput = React.forwardRef<
@@ -29,56 +25,43 @@ export const AppFormInput = React.forwardRef<
 >(
   (
     {
-      type = "default",
-      field,
       value,
+      inputType = "default",
+      field,
       formError,
-      placeholder,
       options,
       optionValueKey,
       optionLabelKey,
-      inputType,
       onChange,
-      accept,
+      placeholder,
+      ...rest
     },
     _ref
   ) => {
-    switch (type) {
+    switch (inputType) {
       case "default":
         return (
           <FormControl>
-            {inputType ? (
-              <Input
-                {...field}
-                className={`${formError ? "border-destructive" : ""}`}
-                placeholder={placeholder}
-                value={value}
-                onChange={(e) => {
-                  onChange(e);
-                  field.onChange(e);
-                }}
-                type={inputType}
-                accept={accept}
-              />
-            ) : (
-              <Input
-                {...field}
-                value={value}
-                className={`${formError ? "border-destructive" : ""}`}
-                placeholder={placeholder}
-                onChange={(e) => {
-                  onChange(e);
-                  field.onChange(e);
-                }}
-              />
-            )}
+            <Input
+              {...field}
+              {...rest}
+              value={value}
+              placeholder={placeholder}
+              className={`${formError ? "border-destructive" : ""}`}
+              onChange={(e) => {
+                onChange?.(e);
+                field.onChange(e);
+              }}
+            />
           </FormControl>
         );
       case "select":
+        if (!options || !optionValueKey || !optionValueKey || !optionLabelKey)
+          return null;
         return (
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger value={value}>
                 <SelectValue
                   className={`${formError ? "border-destructive" : ""}`}
                   placeholder={placeholder}
@@ -100,19 +83,40 @@ export const AppFormInput = React.forwardRef<
       case "file":
         return (
           <FormControl>
-            <Input
+            <AppInputFile
               {...field}
+              value={value}
               className={`text-card-foreground ${
                 formError ? "border-destructive" : ""
               }`}
               placeholder={placeholder}
               onChange={(e) => {
-                e.preventDefault();
-                onChange(e);
+                field.onChange(e.target.files);
               }}
+            />
+          </FormControl>
+        );
+      case "money":
+        return (
+          <FormControl>
+            <InputMoney
+              {...field}
               value={value}
-              type={inputType}
-              accept={accept}
+              intlConfig={{ locale: "es-CO", currency: "COP" }}
+              min={0}
+              defaultValue={0}
+              decimalsLimit={2}
+              allowDecimals={true}
+              className={`text-card-foreground ${
+                formError ? "border-destructive" : ""
+              } `}
+              placeholder={placeholder}
+              onChange={(e) => {
+                e.preventDefault();
+              }}
+              onValueChange={(_value, _name, values) =>
+                field.onChange(values?.float || 0)
+              }
             />
           </FormControl>
         );
