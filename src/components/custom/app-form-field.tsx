@@ -2,39 +2,27 @@ import { FormField, FormItem } from "../ui/form";
 import AppFormLabel from "../app/app-form-label";
 import AppFormMessage from "../app/app-form-message";
 import { AppFormInput } from "../app/app-form-input";
+import { FormFieldType } from "@/types/app.types";
 
-interface FormControlInputProps extends React.HTMLProps<HTMLDivElement> {
+export interface FormControlInputProps
+  extends React.HTMLProps<HTMLInputElement> {
+  inputType: FormFieldType;
   formControl: any;
   fieldName: string;
-  label: string;
-  type?: "select" | "default" | "file";
-  placeholder?: string;
   description?: string;
+  formError: string | undefined;
   options?: any[];
-  formError?: string;
-  required: boolean;
-  optionLabelKey?: string;
   optionValueKey?: string;
-  inputType?: "text" | "email" | "password" | "file";
-  accept?: string;
-  onChange?: (e: any) => void;
+  optionLabelKey?: string;
 }
 function FormControlInput({
   formControl,
   fieldName,
   label,
-  type = "default",
-  placeholder,
-  description = "",
-  options = [],
+  required,
   formError,
-  required = false,
-  optionLabelKey = "",
-  optionValueKey = "",
-  onChange = () => {},
-  className,
-  inputType,
-  accept,
+  description,
+  ...inputProps
 }: FormControlInputProps) {
   return (
     <FormField
@@ -43,24 +31,15 @@ function FormControlInput({
       render={({ field }) => (
         <FormItem>
           <AppFormLabel
-            label={label}
+            label={label || fieldName}
             required={required}
             fieldName={fieldName}
             formError={!!formError}
           />
           <AppFormInput
-            {...field}
-            type={type}
-            placeholder={placeholder}
-            options={options}
-            formError={formError}
-            optionLabelKey={optionLabelKey}
-            optionValueKey={optionValueKey}
-            inputType={inputType}
-            accept={accept}
-            onChange={onChange}
-            className={className}
+            {...inputProps}
             field={field}
+            formError={formError}
           ></AppFormInput>
           <AppFormMessage description={description} formError={!formError} />
         </FormItem>

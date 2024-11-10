@@ -10,17 +10,19 @@ import {
 import Icon from "../app/icon";
 import dynamicIconImports from "lucide-react/dynamicIconImports";
 import { useUserBusinessStore } from "@/stores/user.store";
-import { Link } from "react-router-dom";
-import { useIsFetching } from "@tanstack/react-query";
+import { Link, useLocation } from "react-router-dom";
 import useFetchNav from "@/hooks/use-nav";
 export function NavMain() {
   const activeCompany = useUserBusinessStore((state) => state.activeCompany);
   const user = useUserBusinessStore((state) => state.user);
+  const location = useLocation();
   const { open } = useSidebar();
-  const isFetching = useIsFetching();
-  const { data } = useFetchNav({ owner_id: user?.id });
+  const { data, isLoading } = useFetchNav({ owner_id: user?.id });
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
-  if (isFetching || !data) {
+  if (isLoading || !data) {
     return (
       <>
         <div className="h-3 w-full"></div>
@@ -57,13 +59,13 @@ export function NavMain() {
             activeCompany?.business_type.features
               .sort((a: any, b: any) => a.position - b.position)
               .map((item: any) => (
-                <Collapsible
-                  key={item.id}
-                  asChild
-                  defaultOpen={item.data.active}
-                >
+                <Collapsible key={item.id} asChild>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip={item.data.name}>
+                    <SidebarMenuButton
+                      isActive={isActive(item.data.app_url)}
+                      asChild
+                      tooltip={item.data.name}
+                    >
                       <Link to={item.data.app_url}>
                         <Icon
                           name={

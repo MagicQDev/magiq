@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useUserBusinessStore } from "@/stores/user.store";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
@@ -18,13 +17,10 @@ function NavCompany({
 }) {
   const user = useUserBusinessStore((state) => state.user);
   const companies = useUserBusinessStore((state) => state.companies);
-  const setCompanies = useUserBusinessStore((state) => state.setCompanies);
   const activeCompany = useUserBusinessStore((state) => state.activeCompany);
-  const setActiveCompany = useUserBusinessStore(
-    (state) => state.setActiveCompany
-  );
+
   const { open, setOpen, setOpenMobile, isMobile, openMobile } = useSidebar();
-  const { data, isLoading, isPending, error } = useFetchNav({
+  const { isLoading, isPending } = useFetchNav({
     owner_id: user?.id,
   });
 
@@ -33,13 +29,6 @@ function NavCompany({
     setOpenMobile(false);
     hideSidebarMessage();
   };
-  useEffect(() => {
-    if (data && !error) {
-      setCompanies(data);
-      setActiveCompany(data[0]);
-    }
-  }, [data]);
-
   if (isLoading || isPending) {
     return <NavCompanySkeleton></NavCompanySkeleton>;
   }

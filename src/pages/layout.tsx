@@ -16,12 +16,29 @@ import SuspenseApp from "@/components/app/suspense";
 
 export default function Layout() {
   const setUser = useUserBusinessStore((state) => state.setUser);
+  const setCompanies = useUserBusinessStore((state) => state.setCompanies);
+  const setActiveCompany = useUserBusinessStore(
+    (state) => state.setActiveCompany
+  );
   const user = useUserBusinessStore((state) => state.user);
   const wait = (ms: number, execute: () => void) =>
     new Promise(() => setTimeout(execute, ms));
-  const { isFetching, isLoading } = useFetchNav({ owner_id: user?.id });
+  const {
+    data: companies,
+    isFetching,
+    isLoading,
+    isError,
+  } = useFetchNav({ owner_id: user?.id });
   const globalFetch = useIsFetching();
   const isMutating = useIsMutating();
+
+
+  useEffect(() => {
+    if (companies && !isError) {
+      setCompanies(companies);
+      setActiveCompany(companies[0]);
+    }
+  }, [companies]);
   useEffect(() => {
     //798e7d40-4b65-4b83-9ea8-614c4a5e181d
     wait(5000, () => {

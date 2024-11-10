@@ -3,15 +3,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import FormControlInput from "@/components/custom/app-form-field";
-import { useMutation } from "@tanstack/react-query";
 import { NitFieldFormater, PhoneFieldFormater } from "@/utils/validation";
 import { Button } from "@/components/ui/button";
-import { saveBusiness } from "@/services/business/business";
-import { Tables } from "@/types/supabase-generated.types";
+import { TablesInsert } from "@/types/supabase-generated.types";
 import { useUserBusinessStore } from "@/stores/user.store";
-import { RegisterBusinessFS } from "../utils/business-forms";
 import useBusinessByType from "@/hooks/use-business-by-type";
 import { BusinessByOwnerId } from "@/types/business.types";
+import { useCreateBusiness } from "../hooks/useCreateBusiness";
+import { RegisterBusinessFS } from "../utils/business-forms";
 
 function RegisterBusinessForm({
   onSuccess,
@@ -26,31 +25,27 @@ function RegisterBusinessForm({
     resolver: zodResolver(RegisterBusinessFS),
     mode: "onBlur",
   });
-
-  const mutation = useMutation({
-    mutationFn: async (newBusiness: Tables<"business">) => {
-      return await saveBusiness(newBusiness);
-    },
-    onSuccess: (data:BusinessByOwnerId[]) => {
-      form.reset();
-      onSuccess(data);
-    },
-    onError: () => {
-      onError();
-    },
-  });
+  // State to create new business
+  const mutation = useCreateBusiness((data) => {
+    form.reset();
+    onSuccess(data);
+  }, onError);
 
   const onSubmit = (data: z.infer<typeof RegisterBusinessFS>) => {
     if (user === null) return;
-    const values = data as Tables<"business">;
-    values.owner_id = user.id;
-    mutation.mutate(values);
+    const { logo_file, ...rest } = data;
+    const insertValues: TablesInsert<"business"> = {
+      ...rest,
+      owner_id: user.id,
+    };
+    mutation.mutate({ newBusiness: insertValues, file: logo_file[0] });
   };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormControlInput
-          type="default"
+          inputType="default"
           label="Nombre"
           fieldName="name"
           required={true}
@@ -61,7 +56,7 @@ function RegisterBusinessForm({
         />
         <div className="grid  md:grid-cols-2 grid-flow-row grid-cols-none w-full gap-4">
           <FormControlInput
-            type="select"
+            inputType="select"
             label="Tipo de negocio"
             fieldName="business_type_id"
             placeholder="Selecciona un tipo de negocio"
@@ -74,8 +69,9 @@ function RegisterBusinessForm({
             formControl={form.control}
             className="col-span-1"
           ></FormControlInput>
+          {/* TODO: NIT FORMATER*/}
           <FormControlInput
-            type="default"
+            inputType="default"
             label="Nit"
             fieldName="nit"
             required={false}
@@ -87,7 +83,7 @@ function RegisterBusinessForm({
             className="col-span-1"
           />
           <FormControlInput
-            type="default"
+            inputType="default"
             label="Correo de contacto"
             fieldName="email_contact"
             required={true}
@@ -98,7 +94,7 @@ function RegisterBusinessForm({
             className="col-span-1"
           />
           <FormControlInput
-            type="default"
+            inputType="default"
             label="Teléfono de contacto"
             fieldName="phone_contact"
             value={form.watch("phone_contact")}
@@ -112,7 +108,7 @@ function RegisterBusinessForm({
           />
         </div>
         <FormControlInput
-          type="default"
+          inputType="default"
           label="Dirección"
           fieldName="address"
           required={true}
@@ -123,23 +119,20 @@ function RegisterBusinessForm({
           className="col-span-1"
         />
         <FormControlInput
-          type="default"
-          label="Logo"
-          fieldName="logo"
           inputType="file"
+          label="Logo"
+          fieldName="logo_file"
           accept="image/*"
           required={false}
-          placeholder="Logo de tu negocio"
-          description="Ingrese el logo de su negocio"
           formControl={form.control}
-          onChange={(e) => {
-            e.preventDefault();
-            form.setValue("logo", e.target.files[0]);
-          }}
-          formError={form.formState.errors.logo?.message}
           className="col-span-1"
+          formError={form.formState.errors.logo_file?.message?.toString()}
         />
-        <Button className="mt-4 w-full" type="submit">
+        <Button
+          className="mt-4 w-full"
+          type="submit"
+          disabled={!form.formState.isValid}
+        >
           Guardar
         </Button>
       </form>

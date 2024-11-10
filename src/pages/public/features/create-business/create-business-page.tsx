@@ -41,7 +41,7 @@ function CreateBusinessPage() {
         Completa el formulario para cargar un nuevo negocio al sistema
       </SubTitle>
       <Separator></Separator>
-      <div className="mt-6 w-full">
+      <div className="my-6 w-full">
         <RegisterBusinessForm
           onSuccess={onSuccess}
           onError={showErrorToast}

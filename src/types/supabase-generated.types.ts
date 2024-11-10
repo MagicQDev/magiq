@@ -105,6 +105,51 @@ export type Database = {
           },
         ]
       }
+      business_orders: {
+        Row: {
+          business_id: string
+          created_at: string | null
+          id: string
+          order_products_id: string
+          price_total: number
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          created_at?: string | null
+          id?: string
+          order_products_id: string
+          price_total: number
+          status: string
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          created_at?: string | null
+          id?: string
+          order_products_id?: string
+          price_total?: number
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_orders_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_orders_order_products_id_fkey"
+            columns: ["order_products_id"]
+            isOneToOne: false
+            referencedRelation: "order_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_payment_methods: {
         Row: {
           account_number: string
@@ -137,6 +182,53 @@ export type Database = {
           },
         ]
       }
+      business_products: {
+        Row: {
+          business_id: string
+          category_id: string
+          created_at: string | null
+          description: string
+          id: string
+          is_active: boolean
+          name: string
+          price: number
+          stock: number
+          updated_at: string | null
+        }
+        Insert: {
+          business_id: string
+          category_id: string
+          created_at?: string | null
+          description: string
+          id?: string
+          is_active?: boolean
+          name: string
+          price: number
+          stock?: number
+          updated_at?: string | null
+        }
+        Update: {
+          business_id?: string
+          category_id?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          price?: number
+          stock?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_products_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_type: {
         Row: {
           created_at: string | null
@@ -158,6 +250,48 @@ export type Database = {
           id?: string
           name?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      customers: {
+        Row: {
+          auth_id: string | null
+          birth_date: string | null
+          created_at: string | null
+          gender: string | null
+          height: number | null
+          id: string
+          id_type: string
+          idnumer: string
+          updated_at: string | null
+          weight: number | null
+          wp_numer: string | null
+        }
+        Insert: {
+          auth_id?: string | null
+          birth_date?: string | null
+          created_at?: string | null
+          gender?: string | null
+          height?: number | null
+          id?: string
+          id_type: string
+          idnumer: string
+          updated_at?: string | null
+          weight?: number | null
+          wp_numer?: string | null
+        }
+        Update: {
+          auth_id?: string | null
+          birth_date?: string | null
+          created_at?: string | null
+          gender?: string | null
+          height?: number | null
+          id?: string
+          id_type?: string
+          idnumer?: string
+          updated_at?: string | null
+          weight?: number | null
+          wp_numer?: string | null
         }
         Relationships: []
       }
@@ -259,6 +393,67 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      order_products: {
+        Row: {
+          business_product_id: string
+          created_at: string | null
+          customer_id: string
+          fprice_total: number | null
+          fprice_unit: number | null
+          id: string
+          payment_method_id: string | null
+          quantity: number
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          business_product_id: string
+          created_at?: string | null
+          customer_id: string
+          fprice_total?: number | null
+          fprice_unit?: number | null
+          id?: string
+          payment_method_id?: string | null
+          quantity?: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          business_product_id?: string
+          created_at?: string | null
+          customer_id?: string
+          fprice_total?: number | null
+          fprice_unit?: number | null
+          id?: string
+          payment_method_id?: string | null
+          quantity?: number
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_products_business_product_id_fkey"
+            columns: ["business_product_id"]
+            isOneToOne: false
+            referencedRelation: "business_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_products_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "business_payment_methods"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_products_payment_method_id_fkey"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

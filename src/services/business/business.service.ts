@@ -1,6 +1,5 @@
 import { BusinessByOwnerId } from "@/types/business.types";
 import { supabase } from "../supabase";
-import { Tables } from "@/types/supabase-generated.types";
 export const getBusinessByOwnerId = async (ownerId: string) => {
   const { data, error } = await supabase
     .from("business")
@@ -46,7 +45,7 @@ export const getBusinessByOwnerId = async (ownerId: string) => {
   }
   return data as BusinessByOwnerId[];
 };
-export const saveBusiness = async (business: Tables<"business">) => {
+export const saveBusiness = async (business: any) => {
   const { data, error } = await supabase
     .from("business")
     .insert(business)

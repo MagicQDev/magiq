@@ -5,13 +5,15 @@ function AppFormMessage({
   description,
 }: {
   formError: boolean;
-  description: string;
+  description?: string;
 }) {
   return (
     <>
-      <FormMessage className="text-xs" />
+      <FormMessage className="text-xs text-start" />
       {formError && description && (
-        <FormDescription className="text-xs">{description}</FormDescription>
+        <FormDescription className="text-xs text-start">
+          {description}
+        </FormDescription>
       )}
     </>
   );

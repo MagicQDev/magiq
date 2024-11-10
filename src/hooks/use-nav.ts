@@ -1,4 +1,4 @@
-import { getBusinessByOwnerId } from "@/services/business/business";
+import { getBusinessByOwnerId } from "@/services/business/business.service";
 import { useQuery } from "@tanstack/react-query";
 
 export default function useFetchNav({
@@ -15,6 +15,8 @@ export default function useFetchNav({
     retry() {
       return false;
     },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     refetchOnMount: false,
     enabled: !!owner_id,
   });
