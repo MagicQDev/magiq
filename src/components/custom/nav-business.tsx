@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useUserBusinessStore } from "@/stores/user.store";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";

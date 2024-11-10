@@ -13,7 +13,6 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import MenuForm from "./components/menu-form";
-import { BUSINESS_TYPES } from "./components/utils/constants";
 import { BusinessType } from "./components/utils/types";
 function ProductsPage() {
   const [isOpenForm, setIsOpenForm] = useState(false);
