@@ -19,13 +19,9 @@ interface AppFormInputProps extends CustomFormContolProps {
   field: any;
 }
 
-export const AppFormInput = React.forwardRef<
-  HTMLInputElement,
-  AppFormInputProps
->(
+export const AppFormInput = React.forwardRef<HTMLInputElement, AppFormInputProps>(
   (
     {
-      value,
       inputType = "default",
       field,
       formError,
@@ -45,7 +41,7 @@ export const AppFormInput = React.forwardRef<
             <Input
               {...field}
               {...rest}
-              value={value}
+              value={field.value}
               placeholder={placeholder}
               className={`${formError ? "border-destructive" : ""}`}
               onChange={(e) => {
@@ -61,7 +57,7 @@ export const AppFormInput = React.forwardRef<
         return (
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
-              <SelectTrigger value={value}>
+              <SelectTrigger>
                 <SelectValue
                   className={`${formError ? "border-destructive" : ""}`}
                   placeholder={placeholder}
@@ -69,7 +65,7 @@ export const AppFormInput = React.forwardRef<
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {options.map((option) => (
+              {options.map((option: any) => (
                 <SelectItem
                   key={option[optionValueKey]}
                   value={option[optionValueKey]}
@@ -85,7 +81,7 @@ export const AppFormInput = React.forwardRef<
           <FormControl>
             <AppInputFile
               {...field}
-              value={value}
+              value={field.value}
               className={`text-card-foreground ${
                 formError ? "border-destructive" : ""
               }`}
@@ -101,7 +97,7 @@ export const AppFormInput = React.forwardRef<
           <FormControl>
             <InputMoney
               {...field}
-              value={value}
+              value={field.value}
               intlConfig={{ locale: "es-CO", currency: "COP" }}
               min={0}
               defaultValue={0}

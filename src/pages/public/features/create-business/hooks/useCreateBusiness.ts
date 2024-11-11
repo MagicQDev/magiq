@@ -18,6 +18,7 @@ export const useCreateBusiness = (
   onError: () => void
 ) => {
   const mutation = useMutation({
+    mutationKey: ["add_business"],
     mutationFn: async ({
       newBusiness,
       file,

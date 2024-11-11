@@ -13,8 +13,16 @@ export const ProductForm = z.object({
       message: "El nombre debe tener como máximo 20 caracteres",
     }),
   description: z.string().optional(),
-  price: z.number().nonnegative({
-    message: "El precio no es válido",
+  price: z
+    .number()
+    .nonnegative({
+      message: "El precio no es válido",
+    })
+    .min(0.01, {
+      message: "El precio debe ser mayor a $0",
+    }),
+  category_id: z.string({ message: "La categoría es requerida" }).min(1, {
+    message: "La categoría es requerida",
   }),
   stock: z
     .number()
@@ -23,7 +31,8 @@ export const ProductForm = z.object({
     })
     .int({
       message: "El stock debe ser un número entero",
-    }),
+    })
+    .optional(),
   image: z
     .custom<FileList>((files) => files)
     .refine(
@@ -52,6 +61,7 @@ export const ProductForm = z.object({
         message:
           "El formato no es válido, sólo .jpg, .jpeg, .png and .webp son permitidos",
       }
-    ),
+    )
+    .optional(),
   is_active: z.boolean().default(true),
 });

@@ -29,7 +29,7 @@ function FormControlInput({
       control={formControl}
       name={fieldName}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="flex flex-col justify-end space-y-0 gap-1">
           <AppFormLabel
             label={label || fieldName}
             required={required}

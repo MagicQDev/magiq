@@ -23,7 +23,7 @@ function RegisterBusinessForm({
   const user = useUserBusinessStore((state) => state.user);
   const form = useForm<z.infer<typeof RegisterBusinessFS>>({
     resolver: zodResolver(RegisterBusinessFS),
-    mode: "onBlur",
+    mode: "all",
   });
   // State to create new business
   const mutation = useCreateBusiness((data) => {
@@ -38,7 +38,10 @@ function RegisterBusinessForm({
       ...rest,
       owner_id: user.id,
     };
-    mutation.mutate({ newBusiness: insertValues, file: logo_file[0] });
+    mutation.mutate({
+      newBusiness: insertValues,
+      file: logo_file ? logo_file[0] : undefined,
+    });
   };
 
   return (
@@ -54,7 +57,7 @@ function RegisterBusinessForm({
           formControl={form.control}
           formError={form.formState.errors.name?.message}
         />
-        <div className="grid  md:grid-cols-2 grid-flow-row grid-cols-none w-full gap-4">
+        <div className="grid  md:grid-cols-2 grid-flow-row grid-cols-none w-full md:gap-4">
           <FormControlInput
             inputType="select"
             label="Tipo de negocio"
@@ -76,7 +79,7 @@ function RegisterBusinessForm({
             fieldName="nit"
             required={false}
             placeholder="NIT de tu negocio"
-            description="Ingrese el número NIT de su negocio, si no tiene déjelo en blanco"
+            description="Ingrese el NIT de su negocio"
             formControl={form.control}
             onChange={NitFieldFormater}
             formError={form.formState.errors.nit?.message}
