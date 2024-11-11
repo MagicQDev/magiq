@@ -1,7 +1,3 @@
-import { ProductForm } from "../utils/product-forms";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -21,15 +17,8 @@ import {
 } from "../utils/constants";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { useUserBusinessStore } from "@/stores/user.store";
 import { getAllCategories } from "@/services/products/categories.service";
-import { TablesInsert } from "@/types/supabase-generated.types";
-import { useToast } from "@/hooks/use-toast";
-import { useGetProducts } from "../hooks/use-get-products";
-import { useSaveProduct } from "../hooks/use-products";
-import { useUpdateProduct } from "../hooks/use-uptate-product";
-import { toDataURL } from "@/utils/funtions";
-import { useEffect } from "react";
+import { useMenuForm } from "../hooks/use-menu-form";
 interface DialogFormProps {
   businessType: "Restaurante" | "Tienda" | "Gym" | "Salon" | "Bar";
   formValues: {
@@ -40,92 +29,7 @@ interface DialogFormProps {
   close: () => void;
 }
 function MenuForm({ formValues, businessType, close }: DialogFormProps) {
-  const activeCompany = useUserBusinessStore((state) => state.activeCompany);
-  const user = useUserBusinessStore((state) => state.user);
-  const { toast } = useToast();
-  const { refetch } = useGetProducts(activeCompany?.id);
-  const saveMutation = useSaveProduct(
-    (_data) => {
-      setUpToastSuccess("Producto creado correctamente");
-      refetch();
-    },
-    () => {
-      setUpToastError("Error al crear el producto");
-      console.error("Error to create product");
-    }
-  );
-  const editMutation = useUpdateProduct(
-    (_data) => {
-      setUpToastSuccess("Producto actualizado correctamente");
-      refetch();
-    },
-    () => {
-      setUpToastError("Error al actualizar el producto");
-      console.error("Error to update product");
-    }
-  );
-
-  const form = useForm<z.infer<typeof ProductForm>>({
-    resolver: zodResolver(ProductForm),
-    mode: "all",
-  });
-  const onSubmit = (data: z.infer<typeof ProductForm>) => {
-    close();
-    if (!user || !activeCompany) return;
-    const { image, ...rest } = data;
-    let payload: TablesInsert<"business_products"> = {
-      ...rest,
-      business_id: activeCompany.id,
-    };
-    if (!formValues.isNew) {
-      editMutation.mutate({
-        product: payload,
-        image: image ? image[0] : undefined,
-        userId: user.id,
-      });
-    } else {
-      saveMutation.mutate({
-        product: payload,
-        image: image ? image[0] : undefined,
-        userId: user.id,
-      });
-    }
-  };
-  const setUpToastError = (message: string) => {
-    toast({
-      title: "Error",
-      description: message,
-      variant: "destructive",
-      duration: 5000,
-    });
-  };
-  const setUpToastSuccess = (message: string) => {
-    toast({
-      title: "Exito",
-      description: message,
-      variant: "default",
-      duration: 5000,
-    });
-  };
-  const initialValues = async () => {
-    const initialValues = formValues.initialValues;
-    form.setValue("name", initialValues.name);
-    form.setValue("description", initialValues.description);
-    form.setValue("price", initialValues.price);
-    form.setValue("category_id", initialValues.category_id);
-    if (initialValues.image_url) {
-      const imageFile = await toDataURL(initialValues.image_url);
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(imageFile);
-      form.setValue("image", dataTransfer.files);
-    }
-  };
-
-  useEffect(() => {
-    if (formValues.initialValues) {
-      initialValues();
-    }
-  }, [formValues]);
+  const { form, onSubmit } = useMenuForm({ formValues, closeForm: close });
   return (
     <Dialog
       open={formValues.isOpen}
