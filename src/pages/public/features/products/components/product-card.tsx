@@ -2,7 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tables, TablesUpdate } from "@/types/supabase-generated.types";
 import { maskedPrice } from "@/utils/funtions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useToastAlerts } from "@/hooks/use-toast-alerts";
+import { useSwitchProduct } from "../hooks/use-uptate-product";
 
 function RestaurantPorductCard({
   product,
@@ -12,13 +14,27 @@ function RestaurantPorductCard({
   onEdit: (product: TablesUpdate<"business_products">) => void;
 }) {
   const [isActive, setIsActive] = useState(product.is_active);
-
+  const { setupToastError, setupToastSuccess } = useToastAlerts();
+  const switchMutation = useSwitchProduct(
+    () => {
+      setupToastSuccess("Producto actualizado correctamente");
+    },
+    () => {
+      setupToastError("Error al actualizar el producto");
+    }
+  );
   const handleEdit = () => {
     onEdit(product);
   };
-  const handleActive = () => {
-    setIsActive(!isActive);
+  const handleSwitchChange = (checked: boolean) => {
+    switchMutation.mutate({
+      productId: product.id,
+      status: checked,
+    });
   };
+  useEffect(() => {
+    setIsActive(product.is_active);
+  }, [product]);
 
   return (
     <div
@@ -47,7 +63,10 @@ function RestaurantPorductCard({
             <span className="text-muted-foreground text-xs text-center">
               {isActive ? "Activo" : "Inactivo"}
             </span>
-            <Switch checked={isActive} onCheckedChange={handleActive}></Switch>
+            <Switch
+              checked={isActive}
+              onCheckedChange={handleSwitchChange}
+            ></Switch>
           </div>
           <div className="flex flex-col  gap-0.5">
             <span className="text-muted-foreground text-xs text-center">
