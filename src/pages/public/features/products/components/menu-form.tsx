@@ -23,29 +23,28 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useUserBusinessStore } from "@/stores/user.store";
 import { getAllCategories } from "@/services/products/categories.service";
-import { uploadImage } from "@/services/file/images.service";
 import { TablesInsert } from "@/types/supabase-generated.types";
-import { useGetProducts, useSaveProduct } from "../hooks/use-products";
 import { useToast } from "@/hooks/use-toast";
+import { useGetProducts } from "../hooks/use-get-products";
+import { useSaveProduct } from "../hooks/use-products";
+import { useUpdateProduct } from "../hooks/use-uptate-product";
+import { toDataURL } from "@/utils/funtions";
+import { useEffect } from "react";
 interface DialogFormProps {
   businessType: "Restaurante" | "Tienda" | "Gym" | "Salon" | "Bar";
-  initialValues?: any;
-  isNew: boolean;
-  isOpen: boolean;
+  formValues: {
+    initialValues?: any;
+    isNew: boolean;
+    isOpen: boolean;
+  };
   close: () => void;
 }
-function MenuForm({
-  initialValues,
-  businessType,
-  isNew,
-  isOpen,
-  close,
-}: DialogFormProps) {
+function MenuForm({ formValues, businessType, close }: DialogFormProps) {
   const activeCompany = useUserBusinessStore((state) => state.activeCompany);
   const user = useUserBusinessStore((state) => state.user);
   const { toast } = useToast();
   const { refetch } = useGetProducts(activeCompany?.id);
-  const mutation = useSaveProduct(
+  const saveMutation = useSaveProduct(
     (_data) => {
       setUpToastSuccess("Producto creado correctamente");
       refetch();
@@ -55,10 +54,19 @@ function MenuForm({
       console.error("Error to create product");
     }
   );
+  const editMutation = useUpdateProduct(
+    (_data) => {
+      setUpToastSuccess("Producto actualizado correctamente");
+      refetch();
+    },
+    () => {
+      setUpToastError("Error al actualizar el producto");
+      console.error("Error to update product");
+    }
+  );
 
   const form = useForm<z.infer<typeof ProductForm>>({
     resolver: zodResolver(ProductForm),
-    defaultValues: initialValues || {},
     mode: "all",
   });
   const onSubmit = (data: z.infer<typeof ProductForm>) => {
@@ -69,12 +77,19 @@ function MenuForm({
       ...rest,
       business_id: activeCompany.id,
     };
-    console.log("exec mutation", payload);
-    mutation.mutate({
-      product: payload,
-      image: image ? image[0] : undefined,
-      userId: user.id,
-    });
+    if (!formValues.isNew) {
+      editMutation.mutate({
+        product: payload,
+        image: image ? image[0] : undefined,
+        userId: user.id,
+      });
+    } else {
+      saveMutation.mutate({
+        product: payload,
+        image: image ? image[0] : undefined,
+        userId: user.id,
+      });
+    }
   };
   const setUpToastError = (message: string) => {
     toast({
@@ -89,15 +104,33 @@ function MenuForm({
       title: "Exito",
       description: message,
       variant: "default",
-      duration: 500,
+      duration: 5000,
     });
   };
+  const initialValues = async () => {
+    const initialValues = formValues.initialValues;
+    form.setValue("name", initialValues.name);
+    form.setValue("description", initialValues.description);
+    form.setValue("price", initialValues.price);
+    form.setValue("category_id", initialValues.category_id);
+    if (initialValues.image_url) {
+      const imageFile = await toDataURL(initialValues.image_url);
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(imageFile);
+      form.setValue("image", dataTransfer.files);
+    }
+  };
+
+  useEffect(() => {
+    if (formValues.initialValues) {
+      initialValues();
+    }
+  }, [formValues]);
   return (
     <Dialog
-      open={isOpen}
+      open={formValues.isOpen}
       onOpenChange={(open) => {
         if (!open) {
-          console.log("close modal");
           close();
           form.reset();
         }
@@ -108,7 +141,7 @@ function MenuForm({
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
               <DialogTitle>
-                {isNew
+                {formValues.isNew
                   ? FORM_TITLE["new"][businessType]
                   : FORM_TITLE["edit"][businessType]}
               </DialogTitle>

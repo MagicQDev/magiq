@@ -1,17 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Tables } from "@/types/supabase-generated.types";
+import { Tables, TablesUpdate } from "@/types/supabase-generated.types";
 import { maskedPrice } from "@/utils/funtions";
 import { useState } from "react";
 
 function RestaurantPorductCard({
   product,
+  onEdit,
 }: {
   product: Tables<"business_products">;
+  onEdit: (product: TablesUpdate<"business_products">) => void;
 }) {
   const [isActive, setIsActive] = useState(product.is_active);
 
-  const handleEdit = () => {};
+  const handleEdit = () => {
+    onEdit(product);
+  };
   const handleActive = () => {
     setIsActive(!isActive);
   };

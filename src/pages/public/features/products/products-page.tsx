@@ -8,16 +8,23 @@ import {
   PRODUCTS_PAGE_TITLE,
 } from "@/utils/products-constants";
 import ProductList from "./components/products-list";
-import { useGetProducts } from "@/pages/public/features/products/hooks/use-products";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import MenuForm from "./components/menu-form";
 import { BusinessType } from "./utils/types";
+import { TablesUpdate } from "@/types/supabase-generated.types";
 function ProductsPage() {
-  const [isOpenForm, setIsOpenForm] = useState(false);
+  const [isOpenForm, setIsOpenForm] = useState<{
+    isOpen: boolean;
+    isNew: boolean;
+    initialValues: TablesUpdate<"business_products"> | undefined;
+  }>({
+    isOpen: false,
+    isNew: false,
+    initialValues: undefined,
+  });
   const activeCompany = useUserBusinessStore((state) => state.activeCompany);
-  const { data: products } = useGetProducts(activeCompany?.id);
   if (!activeCompany) {
     return (
       <SubTitle>
@@ -26,8 +33,22 @@ function ProductsPage() {
       </SubTitle>
     );
   }
-  const openForm = () => {
-    setIsOpenForm(true);
+
+  const openForm = (
+    initialValues: TablesUpdate<"business_products"> | undefined,
+    isNew: boolean
+  ) => {
+    setIsOpenForm({
+      isOpen: true,
+      isNew: isNew,
+      initialValues: initialValues,
+    });
+  };
+  const closeForm = () => {
+    setIsOpenForm((prev) => ({ ...prev, isOpen: false }));
+  };
+  const onAddButtonClick = () => {
+    openForm(undefined, true);
   };
   return (
     <div className="w-full">
@@ -39,15 +60,17 @@ function ProductsPage() {
       </SubTitle>
       <Separator></Separator>
       <section className="flex w-full flex-row justify-end mt-4">
-        <Button className="self-end" onClick={openForm}>
+        <Button className="self-end" onClick={onAddButtonClick}>
           Agregar <Plus></Plus>
         </Button>
       </section>
-      <ProductList products={products}></ProductList>
+      <ProductList
+        businessId={activeCompany.id}
+        openForm={openForm}
+      ></ProductList>
       <MenuForm
-        isOpen={isOpenForm}
-        close={() => setIsOpenForm(false)}
-        isNew={true}
+        formValues={isOpenForm}
+        close={closeForm}
         businessType={
           (activeCompany.business_type.name as BusinessType) || "Tienda"
         }

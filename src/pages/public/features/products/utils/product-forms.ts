@@ -1,4 +1,6 @@
+import { TablesUpdate } from "@/types/supabase-generated.types";
 import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/utils/constants";
+import { toDataURL } from "@/utils/funtions";
 import { z } from "zod";
 
 export const ProductForm = z.object({

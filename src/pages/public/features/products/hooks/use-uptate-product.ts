@@ -1,6 +1,6 @@
 import { uploadImage } from "@/services/file/images.service";
-import { saveProduct } from "@/services/products/products.service";
-import { Tables, TablesInsert } from "@/types/supabase-generated.types";
+import { updateProduct } from "@/services/products/products.service";
+import { TablesUpdate } from "@/types/supabase-generated.types";
 import { useMutation } from "@tanstack/react-query";
 
 export const productImageFileName = (
@@ -11,8 +11,8 @@ export const productImageFileName = (
   const uuid = Math.random().toString(36).substring(7);
   return `${userId}/product/${businessId}/${uuid}_product.${fileExtension}`;
 };
-export const useSaveProduct = (
-  onSuccess: (data: Tables<"business_products">[]) => void,
+export const useUpdateProduct = (
+  onSuccess: (data: boolean) => void,
   onError: () => void
 ) => {
   const mutation = useMutation({
@@ -22,11 +22,11 @@ export const useSaveProduct = (
       image,
       userId,
     }: {
-      product: TablesInsert<"business_products">;
+      product: TablesUpdate<"business_products">;
       image: File | undefined;
       userId: string;
     }) => {
-      if (image) {
+      if (image && product.id && product.business_id) {
         const response = await uploadImage(
           image,
           productImageFileName(
@@ -37,7 +37,7 @@ export const useSaveProduct = (
         );
         product.image_url = response;
       }
-      return await saveProduct(product);
+      return await updateProduct(product);
     },
     onSuccess(data, _variables, _context) {
       onSuccess(data);

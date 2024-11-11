@@ -1,4 +1,8 @@
-import { Tables, TablesInsert } from "@/types/supabase-generated.types";
+import {
+  Tables,
+  TablesInsert,
+  TablesUpdate,
+} from "@/types/supabase-generated.types";
 import { supabase } from "../supabase";
 
 export const fetchAllProductsByBusiness = async (business_id: string) => {
@@ -22,4 +26,21 @@ export const saveProduct = async (
     throw new Error(error.message);
   }
   return data as Tables<"business_products">[];
+};
+
+export const updateProduct = async (
+  product: TablesUpdate<"business_products">
+) => {
+  if (product.id) {
+    const { error } = await supabase
+      .from("business_products")
+      .update(product)
+      .eq("id", product.id);
+    if (error) {
+      throw new Error(error.message);
+    }
+    return true;
+  } else {
+    throw new Error("Error el id del producto es requerido");
+  }
 };

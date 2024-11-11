@@ -1,4 +1,4 @@
-import { Tables } from "@/types/supabase-generated.types";
+import { TablesUpdate } from "@/types/supabase-generated.types";
 import RestaurantPorductCard from "./product-card";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -7,12 +7,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useGetProducts } from "../hooks/use-get-products";
 
 function ProductList({
-  products,
+  businessId,
+  openForm,
 }: {
-  products: Tables<"business_products">[] | undefined;
+  businessId: string;
+  openForm: (
+    initialValues: TablesUpdate<"business_products"> | undefined,
+    isNew: boolean
+  ) => void;
 }) {
+  const { data: products } = useGetProducts(businessId);
+  const onEditClick = (product: TablesUpdate<"business_products">) => {
+    openForm(product, false);
+  };
+
   if (!products || products.length === 0) {
     return (
       <p className="text-muted-foreground text-sm text-center mt-4">
@@ -49,7 +60,11 @@ function ProductList({
       </div>
       <Separator></Separator>
       {products.map((product) => (
-        <RestaurantPorductCard product={product} key={product.id} />
+        <RestaurantPorductCard
+          product={product}
+          key={product.id}
+          onEdit={onEditClick}
+        />
       ))}
     </div>
   );
