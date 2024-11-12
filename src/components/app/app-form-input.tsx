@@ -19,20 +19,23 @@ interface AppFormInputProps extends CustomFormContolProps {
   field: any;
 }
 
-export const AppFormInput = React.forwardRef<HTMLInputElement, AppFormInputProps>(
+export const AppFormInput = React.forwardRef<
+  HTMLInputElement,
+  AppFormInputProps
+>(
   (
     {
       inputType = "default",
       field,
       formError,
       options,
+      onChange,
       optionValueKey,
       optionLabelKey,
-      onChange,
       placeholder,
       ...rest
     },
-    _ref
+    ref
   ) => {
     switch (inputType) {
       case "default":
@@ -48,6 +51,7 @@ export const AppFormInput = React.forwardRef<HTMLInputElement, AppFormInputProps
                 onChange?.(e);
                 field.onChange(e);
               }}
+              ref={ref}
             />
           </FormControl>
         );
@@ -87,6 +91,7 @@ export const AppFormInput = React.forwardRef<HTMLInputElement, AppFormInputProps
               }`}
               placeholder={placeholder}
               onChange={(e) => {
+                onChange?.(e);
                 field.onChange(e.target.files);
               }}
             />

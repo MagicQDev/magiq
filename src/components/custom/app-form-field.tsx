@@ -5,7 +5,8 @@ import { AppFormInput } from "../app/app-form-input";
 import { FormFieldType } from "@/types/app.types";
 
 export interface FormControlInputProps
-  extends React.HTMLProps<HTMLInputElement> {
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
   inputType: FormFieldType;
   formControl: any;
   fieldName: string;
