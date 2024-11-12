@@ -44,7 +44,7 @@ export default function Layout() {
     wait(5000, () => {
       setUser({
         id: "798e7d40-4b65-4b83-9ea8-614c4a5e181d",
-        name: "John Doe",
+        name: "Emer Arteaga",
         email: "emer@gmail.com",
       });
     });

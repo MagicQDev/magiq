@@ -13,7 +13,7 @@ function AppFormLabel({
 }) {
   return (
     <FormLabel
-      className={`flex text-start my-2 ${
+      className={`flex text-start items-center my-2 ${
         formError ? "text-destructive" : "text-card-foreground"
       }`}
       htmlFor={fieldName}
