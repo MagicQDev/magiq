@@ -13,7 +13,6 @@ import { useMutation } from "@tanstack/react-query";
 import generateIGDescription from "@/services/ai/open-ai-service";
 import { useState } from "react";
 import InstagramPost from "./instagram-post";
-import Title from "@/components/app/title";
 
 const ProductForm = z.object({
   product: z.string(),
